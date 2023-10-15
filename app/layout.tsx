@@ -17,10 +17,10 @@ export default async function RootLayout({ children }: Props) {
   const session = await getServerSession()
 
   return (
-    <html lang="en">
+    <html lang="en" className="has-background-warning-light">
       <body>
         <SessionProvider session={session}>
-          <NavMenu />
+          {/* <NavMenu /> */}
           {children}
         </SessionProvider> 
       </body>

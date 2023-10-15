@@ -13,11 +13,15 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@prisma/client": "^5.3.1",
+    "@types/react-transition-group": "^4.4.7",
     "bulma": "^0.9.4",
+    "classnames": "^2.3.2",
     "next": "latest",
     "next-auth": "^4.23.2",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-transition-group": "^4.4.5",
+    "sass": "^1.69.3"
   },
   "devDependencies": {
     "@types/node": "latest",

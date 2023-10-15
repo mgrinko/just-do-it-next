@@ -35,8 +35,8 @@ function AuthButton() {
             </figure>
 
             <button
-              className="level-item button is-danger"
               onClick={() => signOut()}
+              className="level-item button is-danger"
             >
               Sign out
             </button>

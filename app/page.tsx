@@ -1,7 +1,8 @@
-export default async function Home() {
+import '../styles/index.scss'
+import { TaskList } from './TaskList'
+
+export default function Home() {
   return (
-    <main>
-      <h1>Home Page</h1>
-    </main>
+    <TaskList />
   )
 }
