@@ -4,12 +4,25 @@ import classNames from 'classnames'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import React, { useEffect, useRef, useState } from 'react'
 import { TaskItem } from './TaskItem'
-import { Task } from '@/types/Task'
-import { useTasks } from '@/hooks/useTasks'
+import { Task } from '@prisma/client'
 
-export function TaskList() {
-  // Unauthorizaed user
-  const userId = 0
+type Props = {
+  listId?: number
+  taskService: {
+    getTasks: (listId: number) => Promise<Task[]>
+    addTask: (task: Task) => Promise<Task>
+    deleteTask: (taskId: number) => Promise<void>
+    updateTask: (task: Task) => Promise<Task>
+  }
+}
+
+export function TaskList({ listId = 0, taskService }: Props) {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    taskService.getTasks(listId).then(setTasks)
+  }, [listId, taskService, key]);
 
   const [title, setTitle] = useState('')
   const titleField = useRef<HTMLInputElement>(null)
@@ -18,7 +31,6 @@ export function TaskList() {
   const [type, setType] = useState<'all' | 'active' | 'completed'>('all')
   const [creating, setCreating] = useState(false)
   const [processings, setProcessings] = useState<number[]>([])
-  const { tasks, ...taskService } = useTasks()
 
   const addProcessing = (id: number) => {
     setProcessings(current => [...current, id])
@@ -28,7 +40,7 @@ export function TaskList() {
     setProcessings(current => current.filter(id => id !== idToRemove))
   }
 
-  const timerId = useRef(0);
+  const timerId = useRef(0)
 
   function showError(message: string) {
     clearTimeout(timerId.current)
@@ -68,9 +80,12 @@ export function TaskList() {
         id: Math.random(),
         title: title.trim(),
         completed: false,
-        userId,
+        listId,
       })
-      .then(() => setTitle(''))
+      .then(() => {
+         setTitle('');
+         setKey(Math.random());
+      })
       .catch(() => showError('Unable to add a task'))
       .finally(() => setCreating(false))
   }
@@ -81,6 +96,7 @@ export function TaskList() {
 
     return taskService
       .deleteTask(taskId)
+      .then(() => setKey(Math.random()))
       .catch(error => {
         showError('Unable to delete a task')
         throw error
@@ -97,6 +113,7 @@ export function TaskList() {
 
     return taskService
       .updateTask(updatedTask)
+      .then(() => setKey(Math.random()))
       .catch(error => {
         showError('Unable to update a task')
         throw error
@@ -131,9 +148,7 @@ export function TaskList() {
   })
 
   return (
-    <div className="taskapp">
-      <h1 className="taskapp__title has-text-success">tasks</h1>
-
+    <div className="taskapp block">
       <div className="taskapp__content">
         <header className="taskapp__header">
           {tasks.length > 0 && (
@@ -175,13 +190,13 @@ export function TaskList() {
             ))}
 
             {creating && (
-              <CSSTransition key={0} timeout={300} classNames="temp-item">
+              <CSSTransition key={0} timeout={400} classNames="temp-item">
                 <TaskItem
                   task={{
                     id: Math.random(),
                     title,
                     completed: false,
-                    userId,
+                    listId,
                   }}
                   isProcessed
                 />
@@ -242,23 +257,6 @@ export function TaskList() {
             </button>
           </footer>
         )}
-      </div>
-
-      <div
-        data-cy="ErrorNotification"
-        className={classNames(
-          'notification is-danger is-light has-text-weight-normal',
-          { hidden: !errorMessage },
-        )}
-      >
-        <button
-          data-cy="HideErrorButton"
-          type="button"
-          className="delete"
-          onClick={() => showError('')}
-        />
-
-        {errorMessage}
       </div>
     </div>
   )

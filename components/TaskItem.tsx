@@ -1,13 +1,13 @@
 'use client'
 
+import { Task } from '@prisma/client'
 import classNames from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
-import { Task } from '../types/Task'
 
 export type Props = {
   task: Task
   isProcessed: boolean
-  onUpdate?: (task: Task) => Promise<void>
+  onUpdate?: (task: Task) => Promise<any>
   onDelete?: () => Promise<void>
 }
 
@@ -93,18 +93,13 @@ export const TaskItem: React.FC<Props> = ({
         </form>
       ) : (
         <>
-          <span
-            data-cy="TaskTitle"
-            className="task__title"
-            onDoubleClick={() => setEditing(true)}
-          >
+          <span className="task__title" onDoubleClick={() => setEditing(true)}>
             {task.title}
           </span>
 
           <button
             type="button"
             className="task__remove"
-            data-cy="TaskDelete"
             onClick={() => onDelete().catch(() => {})}
           >
             ×
@@ -113,10 +108,7 @@ export const TaskItem: React.FC<Props> = ({
       )}
 
       <div
-        data-cy="TaskLoader"
-        className={classNames('modal overlay', {
-          'is-active': isProcessed,
-        })}
+        className={classNames('modal overlay', { 'is-active': isProcessed })}
       >
         <div className="modal-background has-background-white-ter" />
         <div className="loader" />
