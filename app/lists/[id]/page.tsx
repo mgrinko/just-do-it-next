@@ -21,7 +21,7 @@ export default async function Page({ params = { id: '' } }) {
   return (
     <>
       <div className="block is-flex is-justify-content-space-between">
-        <h2 className="title">Do It Today</h2>
+        <h2 className="title is-4">{list.title}:</h2>
         <Link href="/lists" className="delete is-medium" />
       </div>
 
