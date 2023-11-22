@@ -36,9 +36,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# docs
-/docs
-
 # e2e
 e2e/test-results/
 e2e/playwright-report/
